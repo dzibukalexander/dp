@@ -50,15 +50,16 @@ public class AuthController {
             @RequestParam String email,
             @RequestParam String password,
             @RequestParam Role role,
-            @RequestParam(required = false) Long positionId // Позиция только для доктора
-            ) {
+            @RequestParam(required = false) Long positionId,
+            Model model
+    ) {
+        if (role == Role.DOCTOR && positionId == null) {
+            model.addAttribute("errorChoicePos", "Для роли 'Доктор' необходимо выбрать специализацию.");
+            return "register";
+        }
 
         Set<Role> roles = Collections.singleton(role);
-
-        Position position = null;
-        if (role == Role.DOCTOR && positionId != null) {
-            position = positionService.findById(positionId);
-        }
+        Position position = (role == Role.DOCTOR) ? positionService.findById(positionId) : null;
 
         userService.registerUser(firstName, name, secondName, email, password, roles, position);
 

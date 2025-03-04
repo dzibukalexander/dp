@@ -3,6 +3,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.*;
 
 @Data
 @AllArgsConstructor
@@ -15,6 +16,7 @@ public class Doctor {
 
     @ManyToOne
     @JoinColumn(name = "position_id")
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     private Position position;
 
     @OneToOne

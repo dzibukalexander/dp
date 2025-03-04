@@ -5,6 +5,7 @@
 </div>
 <div class="cards-container" id="doctorsContainer">
     <#list doctors as doctor>
+
         <div class="card" data-specialization="${doctor.position.name}">
             <#if doctor.user.avatar??>
                 <img src="/avatar/${doctor.user.avatar.id}" alt="Аватар доктора" class="avatar">

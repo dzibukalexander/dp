@@ -38,6 +38,12 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/login") // Перенаправление после выхода
                         .permitAll()
                 ).build();
+
+//        http
+//                .authorizeRequests()
+//                .antMatchers("/admin/**").hasRole("ADMIN")
+//                .antMatchers(HttpMethod.POST, "/admin/positions").permitAll()
+//        // ...
     }
 
     @Bean

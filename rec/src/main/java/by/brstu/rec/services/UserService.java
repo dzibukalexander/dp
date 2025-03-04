@@ -2,10 +2,7 @@ package by.brstu.rec.services;
 
 import by.brstu.rec.entities.*;
 import by.brstu.rec.enums.Role;
-import by.brstu.rec.repositories.DoctorRepository;
-import by.brstu.rec.repositories.PageRepository;
-import by.brstu.rec.repositories.PatientRepository;
-import by.brstu.rec.repositories.UserRepository;
+import by.brstu.rec.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,6 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -28,9 +26,7 @@ public class UserService implements UserDetailsService {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    private PageRepository pageRepository;
-    @Autowired
-    private PositionService positionService;
+    private PositionRepository positionRepository;
 
     public void registerUser(String firstName, String name, String secondName,
                              String email, String password, Set<Role> roles,
@@ -91,5 +87,39 @@ public class UserService implements UserDetailsService {
 
     public List<User> findAll() {
         return userRepository.findAll();
+    }
+
+    public void delete(Long id) {
+        userRepository.deleteById(id);
+    }
+
+    public void updateDoctorPosition(User user, Long positionId) {
+        if (user.getDoctor() != null) {
+            Doctor doctor = user.getDoctor();
+            if (positionId != null) {
+                Position position = positionRepository.findById(positionId)
+                        .orElseThrow(() -> new RuntimeException("Position not found"));
+                doctor.setPosition(position);
+            } else {
+                doctor.setPosition(null);
+            }
+            doctor.setUser(user);
+            doctorRepository.save(doctor);
+            user.setDoctor(doctor);
+        }
+    }
+
+    public void updateUserRoles(User user, List<String> roles) {
+        Set<Role> currentRoles = new HashSet<>(user.getRoles());
+        currentRoles.removeIf(role -> role == Role.ADMIN);
+
+        if (roles != null) {
+            for (String role : roles) {
+                currentRoles.add(Role.valueOf(role));
+            }
+        }
+        // Обновляем роли пользователя
+        user.getRoles().clear();
+        user.getRoles().addAll(currentRoles);
     }
 }

@@ -28,4 +28,8 @@ public class PositionService {
     public List<Position> findAll() {
         return positionRepository.findAll();
     }
+
+    public void delete(Long id) {
+        positionRepository.deleteById(id);
+    }
 }

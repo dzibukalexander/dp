@@ -15,6 +15,9 @@ public class Position {
     @Column(nullable = false, unique = true)
     private String name;
 
+    @OneToOne(mappedBy = "position")
+    private AIAlgo aiAlgo;
+
     public Position() {};
 
     public Position(String name) {

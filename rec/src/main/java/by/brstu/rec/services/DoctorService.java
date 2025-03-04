@@ -31,4 +31,5 @@ public class DoctorService {
     public List<DoctorPatientPage> getPatientPages(Doctor doctor) {
         return doctorPatientPageRepository.findByDoctor(doctor);
     }
+
 }

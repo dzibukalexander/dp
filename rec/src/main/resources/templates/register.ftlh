@@ -42,19 +42,20 @@
                 </#list>
             </select>
         </div>
-        <div class="mb-3" id="positionField" style="display: none;">
-            <label for="position" class="form-label">Позиция:</label>
-            <input type="text" class="form-control" id="position" name="position">
-        </div>
         <!-- Выбор позиции (только для докторов) -->
         <div class="mb-3" id="positionField" style="display: none;">
-            <label class="form-label">Специализация:</label>
-            <select class="form-select" name="positionId">
+            <label for="positionId" class="form-label">Специализация:</label>
+            <select class="form-select" id="positionId" name="positionId" required>
                 <option value="">Выберите специализацию</option>
                 <#list positions as position>
                     <option value="${position.id}">${position.name}</option>
                 </#list>
             </select>
+            <#if errorChoicePos??>
+                <div class="alert alert-danger" role="alert">
+                    ${errorChoicePos}
+                </div>
+            </#if>
         </div>
         <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
     </form>
@@ -63,12 +64,15 @@
 <script>
     const roleSelect = document.getElementById('role');
     const positionField = document.getElementById('positionField');
+    const positionSelect = document.getElementById('positionId');
 
     roleSelect.addEventListener('change', function() {
         if (roleSelect.value === 'Доктор') {
             positionField.style.display = 'block';
+            positionSelect.required = true; // Делаем выбор обязательным
         } else {
             positionField.style.display = 'none';
+            positionSelect.required = false; // Убираем обязательность выбора
         }
     });
 </script>

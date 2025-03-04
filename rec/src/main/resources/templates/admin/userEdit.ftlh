@@ -1,24 +1,46 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
-</head>
-<body>
-<main>
-    User editor
-    <form action="/user" method="post">
-        <#list roles as role>
-
-            <div>
-                <label><input type="checkbox" name="${role}" ${user.roles?seq_contains(role)?string("checked", "")}>${role}</label>
+<#assign title = "Редактирование пользователя">
+<#assign content>
+    <h2 class="mb-4">Редактирование: ${user.email}</h2>
+    <form action="/admin/users" method="post" class="edit-form">
+        <div class="mb-3">
+            <label class="form-label">Роли:</label>
+            <div class="roles-list">
+                <#list roles as role>
+                    <div class="form-check">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               name="roles"
+                               value="${role}"
+                               id="role-${role}"
+                                ${user.roles?seq_contains(role)?then('checked', '')}
+                                <#if role != 'ADMIN'>disabled</#if>>
+                        <label class="form-check-label" for="role-${role}">
+                            ${role.getDisplayName()}
+                        </label>
+                    </div>
+                </#list>
             </div>
-        </#list>
-        <input type="hidden" value="${user.id}" name="userId">
-<#--        <input type="hidden" value="${_csrf.token}" name="_csrf">-->
-        <button type="submit">Save</button>
+        </div>
+
+        <#-- Показывать выбор позиции только если пользователь уже доктор -->
+        <#if userIsDoctor>
+            <div class="mb-3">
+                <label class="form-label">Позиция доктора:</label>
+                <select class="form-select" name="positionId">
+                    <option value="">-- Нет позиции --</option>
+                    <#list positions as position>
+                        <option value="${position.id}"
+                                ${(user.doctor?? && user.doctor.position?? && user.doctor.position.id == position.id)?then('selected', '')}>
+                            ${position.name}
+                        </option>
+                    </#list>
+                </select>
+            </div>
+        </#if>
+
+        <input type="hidden" name="userId" value="${user.id}">
+        <button type="submit" class="btn btn-primary">Сохранить</button>
     </form>
-</main>
-</body>
-</html>
+</#assign>
+
+<#include "layout.ftlh">
