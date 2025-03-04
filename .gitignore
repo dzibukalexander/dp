@@ -6,8 +6,8 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-/rec/.mvn/
-/rec/mvnw.*
+./rec/.mvn/
+./rec/mvnw.*
 
 ### STS ###
 .apt_generated
