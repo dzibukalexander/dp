@@ -1,7 +1,10 @@
 package by.brstu.rec.entities;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Data
@@ -15,7 +18,7 @@ public class Position {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @OneToOne(mappedBy = "position")
+    @Transient
     private AIAlgo aiAlgo;
 
     public Position() {};
@@ -32,8 +35,16 @@ public class Position {
         return name;
     }
 
+    public AIAlgo getAiAlgo() {
+        return aiAlgo;
+    }
+
     public void setName(String name){
         this.name = name;
+    }
+
+    public void setAiAlgo(AIAlgo aiAlgo) {
+        this.aiAlgo = aiAlgo;
     }
 }
 

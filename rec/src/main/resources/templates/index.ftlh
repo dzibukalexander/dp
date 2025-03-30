@@ -6,6 +6,8 @@
     <title>Распознавание медицинских патологий пациента</title>
     <style>
         <#include "css/main.css">
+        <#include "css/tabs.css">
+        <#include "css/patient.css">
     </style>
 </head>
 <body>
@@ -32,12 +34,13 @@
     </#if>
 </main>
 
-<!-- Подвал -->
-<footer>
-    <p>&copy; 2025 Распознавание медицинских патологий пациента. Все права защищены.</p>
-</footer>
+<#--<!-- Подвал &ndash;&gt;-->
+<#--<footer>-->
+<#--    <p>&copy; 2025 Распознавание медицинских патологий пациента. Все права защищены.</p>-->
+<#--</footer>-->
 
 <script>
+    <#include "js/tabs.js">
     <#if isDoctor>
         <#include "js/doctor.js">
     <#else>

@@ -28,8 +28,8 @@ public class DoctorService {
         return doctorRepository.findAllWithDetails();
     }
 
-    public List<DoctorPatientPage> getPatientPages(Doctor doctor) {
-        return doctorPatientPageRepository.findByDoctor(doctor);
-    }
+//    public List<DoctorPatientPage> getPatientPages(Doctor doctor) {
+//        return doctorPatientPageRepository.findByDoctor(doctor);
+//    }
 
 }

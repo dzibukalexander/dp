@@ -1,30 +1,24 @@
 package by.brstu.rec.Utils;
 
-import java.io.Serializable;
+import jakarta.persistence.Embeddable;
 
+import java.io.Serializable;
+import java.util.Objects;
+
+@Embeddable
 public class DoctorPatientPageId implements Serializable {
+
+
     private Long doctorId;
     private Long patientId;
     private Long pageId;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public DoctorPatientPageId() {}
 
-        DoctorPatientPageId that = (DoctorPatientPageId) o;
-
-        if (!doctorId.equals(that.doctorId)) return false;
-        if (!patientId.equals(that.patientId)) return false;
-        return pageId.equals(that.pageId);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = doctorId.hashCode();
-        result = 31 * result + patientId.hashCode();
-        result = 31 * result + pageId.hashCode();
-        return result;
+    public DoctorPatientPageId(Long doctorId, Long patientId, Long pageId) {
+        this.doctorId = doctorId;
+        this.patientId = patientId;
+        this.pageId = pageId;
     }
 
     public Long getDoctorId() {
@@ -51,11 +45,15 @@ public class DoctorPatientPageId implements Serializable {
         this.pageId = pageId;
     }
 
-    public DoctorPatientPageId() {}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DoctorPatientPageId that)) return false;
+        return Objects.equals(doctorId, that.doctorId) && Objects.equals(patientId, that.patientId) && Objects.equals(pageId, that.pageId);
+    }
 
-    public DoctorPatientPageId(Long doctorId, Long patientId, Long pageId) {
-        this.doctorId = doctorId;
-        this.patientId = patientId;
-        this.pageId = pageId;
+    @Override
+    public int hashCode() {
+        return Objects.hash(doctorId, patientId, pageId);
     }
 }

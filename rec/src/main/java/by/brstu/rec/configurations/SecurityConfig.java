@@ -26,7 +26,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .userDetailsService(customUserDetailsService)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/register", "/login", "templates/css/**", "/js/**").permitAll() // Разрешить доступ к регистрации и статике
+                        //"/api/ml/**"
+                        .requestMatchers("/api/ml/**", "/register", "/login", "templates/css/**", "/js/**").permitAll() // Разрешить доступ к регистрации и статике
                         .anyRequest().authenticated() // Все остальные запросы требуют авторизации
                 )
                 .formLogin(form -> form

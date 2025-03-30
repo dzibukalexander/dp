@@ -7,22 +7,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
 @Service
 public class PageService {
     @Autowired
     private PageRepository pageRepository;
 
-    public Page findById(Long id) {
-        return pageRepository.findById(id).orElse(null);
+    public Page findById(Long id) throws NoSuchElementException {
+        return pageRepository.findById(id).orElseThrow();
     }
 
     public Page uploadPage(MultipartFile file) throws IOException {
-        Page avatar = new Page();
-        avatar.setOriginalFileName(file.getOriginalFilename());
-        avatar.setContentType(file.getContentType());
-        avatar.setSize(file.getSize());
-        avatar.setBytes(file.getBytes());
-        return pageRepository.save(avatar);
+        Page page = new Page();
+        page.setOriginalFileName(file.getOriginalFilename());
+        page.setContentType(file.getContentType());
+        page.setSize(file.getSize());
+        page.setBytes(file.getBytes());
+        return pageRepository.save(page);
     }
 }

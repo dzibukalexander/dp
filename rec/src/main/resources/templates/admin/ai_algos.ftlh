@@ -13,6 +13,7 @@
             <th>Kaggle URL</th>
             <th>Статус</th>
             <th>По умолчанию</th>
+            <th>API URL</th>
             <th>Связанная специализация</th>
             <th>Действия</th>
         </tr>
@@ -25,6 +26,7 @@
                 <td>${aiAlgo.kaggleURL!''}</td>
                 <td>${aiAlgo.status!''}</td>
                 <td>${aiAlgo.is_default?then('Да', 'Нет')}</td>
+                <td>"${aiAlgo.endpoint!''}"</td>
                 <td>
                     <#if aiAlgo.position??>
                         ${aiAlgo.position.name}
@@ -34,7 +36,7 @@
                 </td>
                 <td>
                     <!-- Кнопки действий, например, удаление или редактирование -->
-                    <form action="/admin/ai-algos/${aiAlgo.id}/delete" method="post" style="display: inline;">
+                    <form action="/admin/ai-algos/del/${aiAlgo.id}" method="post" style="display: inline;">
                         <input type="hidden" name="_method" value="DELETE">
                         <button type="submit" class="btn-delete">
                             <i class="bi bi-trash"></i>

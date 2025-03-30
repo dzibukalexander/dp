@@ -3,7 +3,10 @@ package by.brstu.rec.controllers;
 import by.brstu.rec.entities.Doctor;
 import by.brstu.rec.entities.DoctorPatientPage;
 import by.brstu.rec.entities.User;
+import by.brstu.rec.enums.PhotoStatus;
+import by.brstu.rec.services.DoctorPatientPageService;
 import by.brstu.rec.services.DoctorService;
+import by.brstu.rec.services.PatientService;
 import by.brstu.rec.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,37 +26,41 @@ public class MainController {
     private UserService userService;
     @Autowired
     private DoctorService doctorService;
+    @Autowired
+    private DoctorPatientPageService doctorPatientPageService;
 
     @GetMapping("/")
-    public String homePage(
-            @AuthenticationPrincipal UserDetails userDetails,
-            Model model) {
-        // no move from unauth: sc
-        if (userDetails == null) {
-            return "redirect:/login";
-        }
+    public String homePage(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        if (userDetails == null) return "redirect:/login";
 
         User user = userService.findByEmail(userDetails.getUsername());
         model.addAttribute("id", user.getId());
-
-        // Определяем роль пользователя
-        boolean isDoctor = user.getRoles().stream()
-                .anyMatch(role -> role.name().equals("DOCTOR"));
+        boolean isDoctor = user.getRoles().stream().anyMatch(role -> role.name().equals("DOCTOR"));
         model.addAttribute("isDoctor", isDoctor);
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+        List<DoctorPatientPage> openRequests;
+        List<DoctorPatientPage> closedRequests;
+
         if (isDoctor) {
-            List<DoctorPatientPage> patientPages = doctorService.getPatientPages(user.getDoctor());
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
-            for (DoctorPatientPage patientPage : patientPages) {
-                String formattedDate = patientPage.getDateCreated().format(formatter);
-                patientPage.setFormattedDateCreated(formattedDate);
-            }
-            model.addAttribute("patientPages", patientPages);
+            openRequests = doctorPatientPageService.getOpenRequestsForDoctor(user.getDoctor().getId());
+            closedRequests = doctorPatientPageService.getClosedRequestsForDoctor(user.getDoctor().getId());
         } else {
-            List<Doctor> doctors = doctorService.findAll();
-            model.addAttribute("doctors", doctors);
+            model.addAttribute("doctors", doctorService.findAll());
+            openRequests = doctorPatientPageService.getOpenRequestsForPatient(user.getPatient().getId());
+            closedRequests = doctorPatientPageService.getClosedRequestsForPatient(user.getPatient().getId());
         }
 
+        formatRequestDates(openRequests, formatter);
+        formatRequestDates(closedRequests, formatter);
+
+        model.addAttribute("openRequests", openRequests);
+        model.addAttribute("closedRequests", closedRequests);
+
         return "index";
+    }
+
+    private void formatRequestDates(List<DoctorPatientPage> requests, DateTimeFormatter formatter) {
+        requests.forEach(r -> r.setFormattedDateCreated(r.getDateCreated().format(formatter)));
     }
 }
