@@ -40,7 +40,7 @@
 .request-card {
     border: 1px solid #ddd;
     padding: 15px;
-    border-radius: 5px;
+    /*border-radius: 5px;*/
 }
 
 .request-photo, .response-photo {
@@ -74,4 +74,47 @@
 
 .photo-form {
     margin-top: 10px;
+}
+
+/*стили для индикаторов*/
+
+.status-indicator {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+}
+
+.status-indicator.pending {
+    background-color: #ff9800; /* оранжевый */
+}
+
+.status-indicator.in-progress {
+    background-color: #2196F3; /* синий */
+    animation: pulse 1.5s infinite;
+}
+
+.status-indicator.completed {
+    background-color: #4CAF50; /* зеленый */
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.request-card {
+    position: relative;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 5px;
+    transition: transform 0.2s;
+}
+
+.request-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }

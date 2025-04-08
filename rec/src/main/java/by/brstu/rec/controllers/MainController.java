@@ -1,13 +1,11 @@
 package by.brstu.rec.controllers;
 
+import by.brstu.rec.entities.AIAlgo;
 import by.brstu.rec.entities.Doctor;
 import by.brstu.rec.entities.DoctorPatientPage;
 import by.brstu.rec.entities.User;
 import by.brstu.rec.enums.PhotoStatus;
-import by.brstu.rec.services.DoctorPatientPageService;
-import by.brstu.rec.services.DoctorService;
-import by.brstu.rec.services.PatientService;
-import by.brstu.rec.services.UserService;
+import by.brstu.rec.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,6 +26,8 @@ public class MainController {
     private DoctorService doctorService;
     @Autowired
     private DoctorPatientPageService doctorPatientPageService;
+    @Autowired
+    private AIAlgoService aiAlgoService;
 
     @GetMapping("/")
     public String homePage(@AuthenticationPrincipal UserDetails userDetails, Model model) {
@@ -43,8 +43,10 @@ public class MainController {
         List<DoctorPatientPage> closedRequests;
 
         if (isDoctor) {
-            openRequests = doctorPatientPageService.getOpenRequestsForDoctor(user.getDoctor().getId());
-            closedRequests = doctorPatientPageService.getClosedRequestsForDoctor(user.getDoctor().getId());
+            Doctor doctor = user.getDoctor();
+            model.addAttribute("model", aiAlgoService.findByPosition(doctor.getPosition()));
+            openRequests = doctorPatientPageService.getOpenRequestsForDoctor(doctor.getId());
+            closedRequests = doctorPatientPageService.getClosedRequestsForDoctor(doctor.getId());
         } else {
             model.addAttribute("doctors", doctorService.findAll());
             openRequests = doctorPatientPageService.getOpenRequestsForPatient(user.getPatient().getId());
@@ -62,5 +64,6 @@ public class MainController {
 
     private void formatRequestDates(List<DoctorPatientPage> requests, DateTimeFormatter formatter) {
         requests.forEach(r -> r.setFormattedDateCreated(r.getDateCreated().format(formatter)));
+        requests.forEach(r -> r.setFormattedDateClosed(r.getDateClosed().format(formatter)));
     }
 }

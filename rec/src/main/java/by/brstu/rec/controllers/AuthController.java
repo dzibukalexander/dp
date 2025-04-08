@@ -67,11 +67,12 @@ public class AuthController {
     }
 
     @GetMapping("/login")
-    public String login(@AuthenticationPrincipal UserDetailsService userDetails) {
+    public String login(@AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails == null) {
             return "login";
         } else {
             return "redirect:/";
         }
     }
+    //UserDetailsService
 }

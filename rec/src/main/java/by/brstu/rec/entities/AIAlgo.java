@@ -1,5 +1,6 @@
 package by.brstu.rec.entities;
 
+import by.brstu.rec.enums.ModelIO;
 import by.brstu.rec.enums.Status;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
@@ -25,23 +26,25 @@ public class AIAlgo {
     private String name;
 
     @Column(nullable = false)
-    private String inputType; // image, text, etc
+    private ModelIO inputType;
 
     @Column(nullable = false)
-    private String outputType;
+    private ModelIO outputType;
 
     @Column(nullable = false)
     private String endpoint; // /brainTumorModel/predict/
 
     @Column(length = 1000)
     private String description;
-    @Column(length = 200)
+
+    @Column(length = 200, nullable = true)
     private String kaggleURL;
 
     @Enumerated(EnumType.STRING)
     private Status status = Status.ACTIVE;
 
-    private Boolean is_default = false;
+    @Column(nullable = false, name = "is_default")
+    private Boolean isDefault = false;
 
     @OneToOne
     @JoinColumn(name = "position_id")
@@ -68,11 +71,11 @@ public class AIAlgo {
         return status;
     }
 
-    public String getInputType() {
+    public ModelIO getInputType() {
         return inputType;
     }
 
-    public String getOutputType() {
+    public ModelIO getOutputType() {
         return outputType;
     }
 
@@ -80,8 +83,8 @@ public class AIAlgo {
         return endpoint;
     }
 
-    public Boolean getIs_default() {
-        return is_default;
+    public Boolean getIsDefault() {
+        return isDefault;
     }
 
     public Position getPosition() {
@@ -108,11 +111,11 @@ public class AIAlgo {
         this.status = status;
     }
 
-    public void setInputType(String inputType) {
+    public void setInputType(ModelIO inputType) {
         this.inputType = inputType;
     }
 
-    public void setOutputType(String outputType) {
+    public void setOutputType(ModelIO outputType) {
         this.outputType = outputType;
     }
 
@@ -120,8 +123,8 @@ public class AIAlgo {
         this.endpoint = endpoint;
     }
 
-    public void setIs_default(Boolean is_default) {
-        this.is_default = is_default;
+    public void setIsDefault(Boolean isDefault) {
+        this.isDefault = isDefault;
     }
 
     public void setPosition(Position position) {

@@ -1,16 +1,19 @@
 package by.brstu.rec.controllers;
 
 import by.brstu.rec.entities.AIAlgo;
+import by.brstu.rec.enums.ModelIO;
 import by.brstu.rec.enums.Status;
 import by.brstu.rec.services.AIAlgoService;
 import by.brstu.rec.services.PositionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/admin/ai-algos")
+@PreAuthorize("hasAuthority('ADMIN')")
 public class AIAlgoController {
 
     @Autowired
@@ -35,7 +38,8 @@ public class AIAlgoController {
     @GetMapping("/new")
     public String newAIAlgo(Model model) {
         //model.addAttribute("aiAlgo", new AIAlgo());
-        model.addAttribute("positions", positionService.findAll());
+
+        model.addAttribute("positions", positionService.findPositionsWithNoAlgo());
         return "admin/add_model";
     }
 
@@ -43,6 +47,9 @@ public class AIAlgoController {
     public String addAIAlgo(@RequestParam String name,
                             @RequestParam(required = false) String description,
                             @RequestParam(required = false) String kaggleURL,
+                            @RequestParam String inputType,
+                            @RequestParam String outputType,
+                            @RequestParam String endpoint,
                             @RequestParam String status,
                             @RequestParam(required = false) Boolean is_default,
                             @RequestParam(required = false) Long positionId) {
@@ -50,8 +57,11 @@ public class AIAlgoController {
         aiAlgo.setName(name);
         aiAlgo.setDescription(description);
         aiAlgo.setKaggleURL(kaggleURL);
+        aiAlgo.setInputType(ModelIO.valueOf(inputType));
+        aiAlgo.setOutputType(ModelIO.valueOf(outputType));
         aiAlgo.setStatus(Status.valueOf(status));
-        aiAlgo.setIs_default(is_default != null && is_default);
+        aiAlgo.setEndpoint(endpoint);
+        aiAlgo.setIsDefault(is_default != null && is_default);
 
         aiAlgoService.save(aiAlgo);
         if (positionId != null) {

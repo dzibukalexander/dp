@@ -30,9 +30,12 @@ public class DoctorPatientPage {
     private Patient patient;
 
     @ManyToOne(optional = false)
-    //@MapsId("pageId") // Связь с полем pageId в составном ключе
-    @JoinColumn(name = "page_id")
-    private Page page;
+    @JoinColumn(name = "request_page_id")
+    private Page requestPage;
+
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "response_page_id")
+    private Page responsePage;
 
     @Nullable
     private String conclusion;
@@ -40,37 +43,49 @@ public class DoctorPatientPage {
     @Enumerated(EnumType.STRING)
     private PhotoStatus status = PhotoStatus.OPEN;
 
-    // Время отправки фотографии
+    // Время отправки запроса
     private LocalDateTime dateCreated = LocalDateTime.now();
+
+    // Время закрытия запроса
+    private LocalDateTime dateClosed = LocalDateTime.now();
 
     // Новое поле для хранения отформатированной даты
     @Transient // Поле не сохраняется в базе данных
     private String formattedDateCreated;
 
-    // Ответ на этот запрос (если есть)
-    @OneToOne(mappedBy = "originalRequest", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private DoctorPatientPage response;
+    // Новое поле для хранения отформатированной даты
+    @Transient // Поле не сохраняется в базе данных
+    private String formattedDateClosed;
 
-    // Ссылка на исходный запрос (для ответов)
-    @OneToOne
-    @JoinColumn(name = "original_request_id")
-    private DoctorPatientPage originalRequest;
+    @Column(name = "in_progress", nullable = false)
+    private boolean inProgress = false;
 
-    public DoctorPatientPage getResponse() {
-        return response;
-    }
 
-    public void setResponse(DoctorPatientPage response) {
-        this.response = response;
-    }
+//
+//    // Ответ на этот запрос (если есть)
+//    @OneToOne(mappedBy = "originalRequest", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    private DoctorPatientPage response;
+//
+//    // Ссылка на исходный запрос (для ответов)
+//    @OneToOne
+//    @JoinColumn(name = "original_request_id")
+//    private DoctorPatientPage originalRequest;
 
-    public DoctorPatientPage getOriginalRequest() {
-        return originalRequest;
-    }
-
-    public void setOriginalRequest(DoctorPatientPage originalRequest) {
-        this.originalRequest = originalRequest;
-    }
+//    public DoctorPatientPage getResponse() {
+//        return response;
+//    }
+//
+//    public void setResponse(DoctorPatientPage response) {
+//        this.response = response;
+//    }
+//
+//    public DoctorPatientPage getOriginalRequest() {
+//        return originalRequest;
+//    }
+//
+//    public void setOriginalRequest(DoctorPatientPage originalRequest) {
+//        this.originalRequest = originalRequest;
+//    }
 
     public String getFormattedDateCreated() {
         return formattedDateCreated;
@@ -80,13 +95,28 @@ public class DoctorPatientPage {
         this.formattedDateCreated = formattedDateCreated;
     }
 
-
-    public Page getPage() {
-        return page;
+    public String getFormattedDateClosed() {
+        return formattedDateClosed;
     }
 
-    public void setPage(Page page) {
-        this.page = page;
+    public void setFormattedDateClosed(String formattedDateClosed) {
+        this.formattedDateClosed = formattedDateClosed;
+    }
+
+    public Page getRequestPage() {
+        return requestPage;
+    }
+
+    public void setRequestPage(Page requestPage) {
+        this.requestPage = requestPage;
+    }
+
+    public Page getResponsePage() {
+        return responsePage;
+    }
+
+    public void setResponsePage(Page responsePage) {
+        this.responsePage = responsePage;
     }
 
     public Patient getPatient() {
@@ -122,6 +152,14 @@ public class DoctorPatientPage {
         this.dateCreated = dateCreated;
     }
 
+    public LocalDateTime getDateClosed() {
+        return dateClosed;
+    }
+
+    public void setDateClosed(LocalDateTime dateClosed) {
+        this.dateClosed = dateClosed;
+    }
+
     @Nullable
     public String getConclusion() {
         return conclusion;
@@ -138,4 +176,13 @@ public class DoctorPatientPage {
     public void setStatus(PhotoStatus status) {
         this.status = status;
     }
+
+    public boolean isInProgress() {
+        return inProgress;
+    }
+
+    public void setInProgress(boolean inProgress) {
+        this.inProgress = inProgress;
+    }
+
 }

@@ -1,6 +1,12 @@
 <!-- Контент для пациента. Файл index-patient -->
 
 <div class="patient-tabs">
+    <!-- Общий фильтр для всех вкладок -->
+    <div class="filter-section">
+        <label for="specializationFilter">Фильтр по специализации:</label>
+        <input type="text" id="specializationFilter" oninput="filterDoctors()">
+    </div>
+
     <!-- Вкладки -->
     <div class="tab-buttons">
         <button class="tab-button active" data-tab-target="send-tab">Отправить фото</button>
@@ -10,11 +16,6 @@
 
     <!-- Содержимое вкладок -->
     <div id="send-tab" class="tab-content active">
-        <div class="filter-section">
-            <label for="specializationFilter">Фильтр по специализации:</label>
-            <input type="text" id="specializationFilter" oninput="filterDoctors()">
-        </div>
-
         <div class="cards-container" id="doctorsContainer">
             <#list doctors as doctor>
                 <div class="card" data-specialization="${doctor.position.name}">
@@ -36,14 +37,14 @@
         <div class="requests-container">
             <#if openRequests?? && openRequests?size gt 0>
                 <#list openRequests as request>
-                    <div class="request-card">
+                    <div class="request-card" data-specialization="${request.doctor.position.name}">
                         <div class="doctor-info">
                             <h4>Доктор: ${request.doctor.user.firstName} ${request.doctor.user.name}</h4>
                             <p>Специализация: ${request.doctor.position.name}</p>
                             <p>Дата отправки: ${request.formattedDateCreated}</p>
                         </div>
-                        <#if request.page??>
-                            <img src="/photo/${request.page.id}" alt="Отправленное фото" class="request-photo">
+                        <#if request.requestPage??>
+                            <img src="/photo/${request.requestPage.id}" alt="Отправленное фото" class="request-photo">
                         </#if>
                     </div>
                 </#list>
@@ -53,53 +54,12 @@
         </div>
     </div>
 
-<#--    <div id="closed-tab" class="tab-content">-->
-<#--        <h3>Закрытые запросы (с ответом доктора)</h3>-->
-<#--        <div class="requests-container">-->
-<#--            <#if closedRequests?? && closedRequests?size gt 0>-->
-<#--                <#list closedRequests as request>-->
-<#--                    <div class="request-card">-->
-<#--                        <!-- Информация о докторе &ndash;&gt;-->
-<#--                        <div class="doctor-info">-->
-<#--                            <h4>Доктор: ${request.doctor.user.firstName} ${request.doctor.user.name}</h4>-->
-<#--                            <p>Специализация: ${request.doctor.position.name}</p>-->
-<#--                            <p>Дата: ${request.formattedDateCreated}</p>-->
-<#--                        </div>-->
-
-<#--                        <!-- Отправленное фото &ndash;&gt;-->
-<#--                        <#if request.page??>-->
-<#--                            <div class="photo-section">-->
-<#--                                <h5>Отправленное фото:</h5>-->
-<#--                                <img src="/photo/${request.page.id}" alt="Отправленное фото">-->
-<#--                            </div>-->
-<#--                        </#if>-->
-
-<#--                        <!-- Ответное фото &ndash;&gt;-->
-<#--                        <#if request.response?? && request.response.page??>-->
-<#--                            <div class="photo-section">-->
-<#--                                <h5>Ответ доктора:</h5>-->
-<#--                                <img src="/photo/${request.response.page.id}" alt="Ответное фото">-->
-<#--                            </div>-->
-
-<#--                            <#if request.response.conclusion??>-->
-<#--                                <div class="conclusion-box">-->
-<#--                                    <h5>Заключение:</h5>-->
-<#--                                    <p>${request.response.conclusion}</p>-->
-<#--                                </div>-->
-<#--                            </#if>-->
-<#--                        </#if>-->
-<#--                    </div>-->
-<#--                </#list>-->
-<#--            </#if>-->
-<#--        </div>-->
-<#--    </div>-->
-
     <div id="closed-tab" class="tab-content">
         <h3>Закрытые запросы (с ответом доктора)</h3>
         <div class="requests-container">
-            <#if closedReqpuests?? && closedRequests?size gt 0>
+            <#if closedRequests?? && closedRequests?size gt 0>
                 <#list closedRequests as request>
-                    <a href="/request/${request.id}" class="request-card-link">
+                    <a href="/request/${request.id}" class="request-card-link" data-specialization="${request.doctor.position.name}">
                         <div class="request-card">
                             <div class="doctor-info">
                                 <#if request.doctor.user.avatar??>
@@ -109,8 +69,10 @@
                                 <#else>
                                     <div class="avatar-placeholder">Нет аватара</div>
                                 </#if>
-                                <h4>${request.doctor.user.firstName} ${request.doctor.user.secondName}</h4>
-                                <p>Дата: ${request.formattedDateCreated}</p>
+                                <h4>${request.doctor.user.firstName} ${request.doctor.user.name}</h4>
+                                <h4>Специализация: ${request.doctor.position.name}</h4>
+                                <p>Дата открытия: ${request.formattedDateCreated}</p>
+                                <p>Дата закрытия: ${request.formattedDateClosed}</p>
                             </div>
                             <div class="photos-container">
                                 <#if request.page??>

@@ -17,18 +17,11 @@ public interface DoctorPatientPageRepository extends JpaRepository<DoctorPatient
 //    List<DoctorPatientPage> findByPatientIdAndStatusOrderByDateCreatedDesc(Long patientId, PhotoStatus photoStatus);
 //    List<DoctorPatientPage> findByDoctorIdAndStatusOrderByDateCreatedDesc(Long doctorId, PhotoStatus photoStatus);
 
-    // Для доктора: найти все запросы без ответов
-    List<DoctorPatientPage> findByDoctorIdAndStatusAndResponseIsNull(Long doctorId, PhotoStatus status);
+    DoctorPatientPage findByRequestPageId(Long pageId);
 
-    // Для пациента: найти все запросы без ответов
-    List<DoctorPatientPage> findByPatientIdAndStatusAndResponseIsNull(Long patientId, PhotoStatus status);
+    // Для доктора: найти все запросы с/без ответов
+    List<DoctorPatientPage> findByDoctorIdAndStatus(Long doctorId, PhotoStatus status);
+    // Для пациента: найти все запросы с/без ответов
+    List<DoctorPatientPage> findByPatientIdAndStatus(Long patientId, PhotoStatus status);
 
-    // Для доктора: найти все запросы с ответами
-    List<DoctorPatientPage> findByDoctorIdAndStatusAndResponseIsNotNull(Long doctorId, PhotoStatus status);
-
-    // Для пациента: найти все запросы с ответами
-    List<DoctorPatientPage> findByPatientIdAndStatusAndResponseIsNotNull(Long patientId, PhotoStatus status);
-
-    // Найти ответ по ID исходного запроса
-    Optional<DoctorPatientPage> findByOriginalRequestId(Long originalRequestId);
 }

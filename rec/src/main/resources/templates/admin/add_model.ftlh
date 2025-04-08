@@ -17,7 +17,22 @@
 
         <div class="mb-3">
             <label class="form-label">Kaggle URL:</label>
-            <input type="text" class="form-control" name="kaggleURL" required>
+            <input type="text" class="form-control" name="kaggleURL">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Тип входных данных:</label>
+            <select class="form-select" name="inputType" required>
+                <option value="IMAGE">Изображение (image)</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Тип выходных данных:</label>
+            <select class="form-select" name="outputType" required>
+                <option value="TEXT">Текст (text)</option>
+                <option value="IMAGE">Изображение (image)</option>
+            </select>
         </div>
 
         <div class="mb-3">
@@ -26,6 +41,11 @@
                 <option value="ACTIVE">Активна</option>
                 <option value="INACTIVE">Неактивна</option>
             </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">API-url:</label>
+            <input type="text" class="form-control" name="endpoint" required>
         </div>
 
         <div class="mb-3">

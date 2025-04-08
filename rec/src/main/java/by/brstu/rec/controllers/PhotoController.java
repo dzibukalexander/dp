@@ -19,7 +19,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Iterator;
 
 @Controller
 public class PhotoController {
@@ -48,6 +55,25 @@ public class PhotoController {
     @GetMapping("/photo/{id}")
     public ResponseEntity<byte[]> getPhoto(@PathVariable Long id) {
         Page page = pageService.findById(id);
+
+        // Если это TIFF, конвертируем в JPEG
+//        if (page.getContentType().equals("image/tiff")) {
+//            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+//            try (ImageInputStream input = ImageIO.createImageInputStream(new ByteArrayInputStream(page.getBytes()))) {
+//                Iterator<ImageReader> readers = ImageIO.getImageReaders(input);
+//                if (readers.hasNext()) {
+//                    ImageReader reader = readers.next();
+//                    reader.setInput(input);
+//                    BufferedImage image = reader.read(0);
+//                    ImageIO.write(image, "jpg", outputStream);
+//                    return ResponseEntity.ok()
+//                            .contentType(MediaType.IMAGE_JPEG)
+//                            .body(outputStream.toByteArray());
+//                }
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(page.getContentType()))
                 .body(page.getBytes());
@@ -59,7 +85,6 @@ public class PhotoController {
             @RequestParam("doctorId") Long doctorId,
             @AuthenticationPrincipal UserDetails userDetails) throws IOException {
 
-        // Получаем текущего пользователя (пациента)
         Patient patient = userService.findByEmail(userDetails.getUsername()).getPatient();
         // Сохраняем фото и создаем запись в DoctorPatientPage
         doctorPatientPageService.sendFileToDoctor(doctorId, patient.getId(), file);
@@ -67,13 +92,12 @@ public class PhotoController {
         return "redirect:/";
     }
 
-    @PostMapping("/response")
-    public String respondToPatient(@RequestParam Long id,
-                                   @RequestParam(required = false) String conclusion,
-                                   @RequestParam(required = false) MultipartFile responseFile,
-                                   @AuthenticationPrincipal UserDetails userDetails) throws IOException {
-      //  DoctorPatientPageDTO dto = new DoctorPatientPageDTO(ptdId);
-        doctorPatientPageService.sendResponseToPatient(id, conclusion, responseFile);
-        return "redirect:/";
-    }
+//    @PostMapping("/response")
+//    public String respondToPatient(@RequestParam Long id,
+//                                   @RequestParam(required = false) String conclusion,
+//                                   @AuthenticationPrincipal UserDetails userDetails) throws IOException {
+//      //  DoctorPatientPageDTO dto = new DoctorPatientPageDTO(ptdId);
+//        doctorPatientPageService.sendResponseToPatient(id, conclusion);
+//        return "redirect:/";
+//    }
 }

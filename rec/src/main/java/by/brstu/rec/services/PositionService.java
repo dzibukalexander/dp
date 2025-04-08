@@ -7,6 +7,7 @@ import by.brstu.rec.repositories.PositionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -26,6 +27,10 @@ public class PositionService {
         return positionRepository.findById(id).orElse(null);
     }
 
+    public List<Position> findPositionsWithNoAlgo() {
+        return positionRepository.findPositionsWithoutAlgo();
+    }
+
     public Position save(Position position) {
         return positionRepository.save(position);
     }
@@ -36,10 +41,15 @@ public class PositionService {
         // Заполняем поле aiAlgo для каждой позиции
         positions.forEach(position -> {
             AIAlgo aiAlgo = aiAlgoRepository.findByPositionId(position.getId());
-            position.setAiAlgo(aiAlgo);
+            if(aiAlgo != null)
+                position.setAiAlgo(aiAlgo);
         });
 
         return positions;
+    }
+
+    public List<Position> findPositionsByNameNot(String positionName) {
+        return positionRepository.findPositionsByNameNot(positionName);
     }
 
     public void delete(Long id) {

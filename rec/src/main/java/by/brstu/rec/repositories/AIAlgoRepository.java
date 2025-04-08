@@ -2,6 +2,7 @@ package by.brstu.rec.repositories;
 
 import by.brstu.rec.entities.AIAlgo;
 import by.brstu.rec.entities.Position;
+import by.brstu.rec.enums.ModelIO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,6 +16,6 @@ public interface AIAlgoRepository extends JpaRepository<AIAlgo, Long> {
 
     AIAlgo findByPosition(Position position);
     Optional<AIAlgo> findByName(String name);
-    List<AIAlgo> findByInputType(String inputType);
+    List<AIAlgo> findByInputType(ModelIO inputType);
 }
 

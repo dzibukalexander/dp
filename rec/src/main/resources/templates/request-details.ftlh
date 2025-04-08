@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>Детали запроса</title>
@@ -7,6 +7,13 @@
         <#include "css/main.css">
         <#include "css/request-details.css">
     </style>
+
+    <!-- Альтернативные CDN -->
+    <head>
+        <!-- Подключаем SockJS и Stomp -->
+        <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.6.1/dist/sockjs.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    </head>
 </head>
 <body>
 
@@ -41,7 +48,7 @@
                     <div class="avatar-placeholder">Нет аватара</div>
                 </#if>
                 <h2>${request.doctor.user.firstName} ${request.doctor.user.name}</h2>
-                <p>${request.doctor.position.name}</p>
+                <p>Специализация: ${request.doctor.position.name}</p>
             </div>
         </#if>
     </div>
@@ -50,44 +57,99 @@
         <!-- Отправленное фото -->
         <div class="photo-card">
             <h3><#if isDoctor>Фото пациента<#else>Ваше фото</#if></h3>
-            <#if request.page??>
-                <img src="/photo/${request.page.id}" alt="Отправленное фото">
+            <#if request.requestPage??>
+                <img src="/photo/${request.requestPage.id}" alt="Отправленное фото" id="patient-photo">
             <#else>
                 <div style="padding: 20px; text-align: center;">Фото не найдено</div>
             </#if>
         </div>
 
-        <!-- Ответное фото (если есть) -->
-        <#if request.response?? && request.response.page??>
-            <div class="photo-card">
-                <h3><#if isDoctor>Ваш ответ<#else>Ответ доктора</#if></h3>
-                <img src="/photo/${request.response.page.id}" alt="Ответное фото">
-                <#if request.response.conclusion??>
-                    <div class="conclusion-box">
-                        <h4>Заключение:</h4>
-                        <p>${request.response.conclusion}</p>
+        <!-- Блок для ответа/предсказания -->
+        <div class="photo-card" id="response-section">
+            <h3>Результат анализа</h3>
+            <div id="prediction-result">
+                <#if request?? && (request.responsePage?? || request.conclusion??)>
+                    <#if request.responsePage??>
+                        <img src="/photo/${request.responsePage.id}" alt="Ответное фото" id="response-photo">
+                    </#if>
+                    <#if request.conclusion??>
+                        <div class="conclusion-box">
+                            <h4>Заключение:</h4>
+                            <p>${request.conclusion}</p>
+                        </div>
+                    </#if>
+                <#else>
+                    <div id="empty-response" class="empty-state">
+                        <p>Нажмите "Сделать прогноз" для анализа</p>
                     </div>
                 </#if>
             </div>
-        </#if>
+            <div id="prediction-loading" class="loading-indicator"
+                 style="display: ${request.inProgress?then('block', 'none')};">
+                <div class="spinner"></div>
+                <p>Идет анализ изображения...</p>
+            </div>
+        </div>
     </div>
 
     <!-- Форма ответа для доктора -->
     <#if isDoctor && request.status.name() == "OPEN">
         <div class="response-form">
             <h3>Отправить ответ</h3>
+            <div class="action-buttons">
+                <#if model??>
+                    <button onclick="makePrediction(${request.id}, ${model.id})"
+                            id="predict-btn"
+                            class="action-btn predict-btn"/>
+                <#else>
+                    <button class="action-btn predict-btn" disabled title="Нет доступной модели для вашей специализации">
+                        Сделать прогноз (недоступно)
+                    </button>
+                </#if>
+            </div>
+
             <form action="/request/${request.id}/respond"
                   method="post"
-                  enctype="multipart/form-data">
-                <textarea name="conclusion"
-                          placeholder="Ваше заключение..."
-                          rows="4"></textarea>
-                <input type="file" name="responsePhoto" accept="image/*">
-                <button type="submit" class="submit-btn">Отправить ответ</button>
+                  enctype="multipart/form-data"
+                  id="response-form">
+
+                <div class="form-group">
+                    <label for="conclusion-text">Заключение:</label>
+                    <textarea name="conclusion"
+                              id="conclusion-text"
+                              placeholder="Введите ваше заключение..."
+<#--                              rows="6">${(predictionResult.result)!''}</textarea>-->
+                              rows="6">${(request.conclusion)!''}</textarea>
+                </div>
+
+                <#if model?? && model.outputType == 'TEXT'>
+                    <div class="form-group">
+                        <label for="response-photo-input">Ответное фото (если требуется):</label>
+                        <input type="file"
+                               name="responsePhoto"
+                               id="response-photo-input"
+                               accept="image/*">
+                        <div id="photo-preview" class="photo-preview" style="display: none;">
+                            <img id="preview-image" src="" alt="Предпросмотр фото">
+                            <button type="button" id="remove-photo" class="remove-photo-btn">×</button>
+                        </div>
+                    </div>
+                </#if>
+                <button type="submit" class="action-btn submit-btn">
+                    Отправить ответ
+                </button>
             </form>
         </div>
     </#if>
 </main>
+
+<script type="module">
+    <#include "./js/websocket-handler.js">
+    <#include "./js/request-details.js">
+    document.addEventListener('DOMContentLoaded', function() {
+        init(${request.id});
+    });
+</script>
 
 </body>
 </html>

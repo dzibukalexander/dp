@@ -54,3 +54,32 @@
 .btn-edit:hover {
     background: rgba(42, 111, 219, 0.1);
 }
+
+.btn {
+    margin-bottom: 10px;
+}
+
+.clickable-row {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.clickable-row:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+.models-header {
+    padding: 1rem 0;
+}
+
+.text-truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.badge {
+    font-weight: 500;
+    padding: 0.35em 0.65em;
+    font-size: 0.85em;
+}

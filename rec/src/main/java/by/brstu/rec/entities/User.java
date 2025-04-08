@@ -18,6 +18,79 @@ import java.util.Set;
 @Entity
 public class User implements UserDetails{
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private String firstName;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
+    private String secondName;
+
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(nullable = false, length = 1000)
+    private String password;
+
+    @Column(name = "active")
+    private boolean active;
+
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"))
+    @Enumerated(EnumType.STRING)
+    private Set<Role> roles;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "avatar_id")
+    private Page avatar; // Аватар пользователя
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Doctor doctor;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Patient patient;
+
+    private LocalDateTime dateCreated = LocalDateTime.now();
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return active;
+    }
+
+
+    // Getters and Setters
+
     public Long getId() {
         return id;
     }
@@ -82,89 +155,35 @@ public class User implements UserDetails{
         this.roles = roles;
     }
 
-    public Page getAvatar() { return avatar; }
-    public void setAvatar(Page avatar) { this.avatar = avatar; }
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false)
-    private String firstName;
-
-    @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = false)
-    private String secondName;
-
-    @Column(nullable = false, unique = true)
-    private String email;
-
-    @Column(nullable = false, length = 1000)
-    private String password;
-
-//    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//    @JoinColumn("id")
-//    private Page page;
-
-    @Column(name = "active")
-    private boolean active;
-
-    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"))
-    @Enumerated(EnumType.STRING)
-    private Set<Role> roles;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "avatar_id")
-    private Page avatar; // Аватар пользователя
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Doctor doctor;
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Patient patient;
-
-    public Doctor getDoctor() { return doctor; }
-    public void setDoctor(Doctor doctor) { this.doctor = doctor; }
-
-    public Patient getPatient() { return patient; }
-    public void setPatient(Patient patient) { this.patient = patient; }
-
-    private LocalDateTime dateCreated = LocalDateTime.now();
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles;
+    public Page getAvatar() {
+        return avatar;
     }
 
-    @Override
-    public String getUsername() {
-        return email;
+    public void setAvatar(Page avatar) {
+        this.avatar = avatar;
     }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
+    public Doctor getDoctor() {
+        return doctor;
     }
 
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
     }
 
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
+    public Patient getPatient() {
+        return patient;
     }
 
-    @Override
-    public boolean isEnabled() {
-        return active;
+    public void setPatient(Patient patient) {
+        this.patient = patient;
     }
 
+    public LocalDateTime getDateCreated() {
+        return dateCreated;
+    }
 
-    // Getters and Setters
+    public void setDateCreated(LocalDateTime dateCreated) {
+        this.dateCreated = dateCreated;
+    }
 }

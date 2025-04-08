@@ -1,0 +1,56 @@
+/* Стили для страницы модели */
+.model-details-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.model-header {
+    margin-bottom: 30px;
+}
+
+.model-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    overflow: hidden;
+}
+
+.model-card-header {
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e3e6f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.model-card-body {
+    padding: 20px;
+}
+
+.model-property {
+    margin-bottom: 20px;
+}
+
+.model-property h5 {
+    color: #4e73df;
+    margin-bottom: 8px;
+    font-size: 1rem;
+}
+
+.model-property p {
+    margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+    .model-details-container {
+        padding: 15px;
+    }
+
+    .model-card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+}

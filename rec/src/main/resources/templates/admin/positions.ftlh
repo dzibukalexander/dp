@@ -1,50 +1,57 @@
 <#assign title = "Специализации">
 <#assign content>
-    <div class="positions-header">
-        <h2 class="mb-4">Список специализаций</h2>
+    <div class="positions-header d-flex justify-content-between align-items-center mb-4">
+        <h2>Список специализаций</h2>
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addPositionModal">
+            <i class="bi bi-plus-circle"></i> Добавить
+        </button>
     </div>
 
-    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addPositionModal">
-        Добавить
-    </button>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                    <tr>
+                        <th>Название</th>
+                        <th>Связанная модель</th>
+                        <th>Действия</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <#list positions as position>
+                        <tr class="clickable-row">
+                            <td>${position.name}</td>
+                            <td>
+                                <#if position.aiAlgo??>
+                                    <span class="badge bg-primary">${position.aiAlgo.name}</span>
+                                <#else>
+                                    <span class="badge bg-light text-dark">Нет связи</span>
+                                </#if>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a href="/admin/positions/${position.id}/edit" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <form action="/admin/positions/del/${position.id}" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                onclick="return confirm('Удалить эту специализацию?')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </#list>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Название</th>
-            <th>Связанная модель</th>
-            <th>Действия</th>
-        </tr>
-        </thead>
-        <tbody>
-        <#list positions as position>
-            <tr>
-                <td>${position.name}</td>
-                <td>
-                    <#if position.aiAlgo??>
-                        ${position.aiAlgo.name}
-                    <#else>
-                        Нет связи
-                    </#if>
-                </td>
-                <td>
-                    <div class="actions">
-<#--                        <a href="/admin/positions/${position.id}/edit" class="btn-edit" onclick="openEditModal(event)">-->
-<#--                            <i class="bi bi-pencil-square"></i>-->
-<#--                        </a>-->
-                        <form action="/admin/positions/del/${position.id}" method="post" style="display: inline;">
-                            <button type="submit" class="btn-delete">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </form>
-                    </div>
-                </td>
-            </tr>
-        </#list>
-        </tbody>
-    </table>
 
-    <#-- Модальное окно для добавления позиции -->
+<#-- Модальное окно для добавления позиции -->
     <div class="modal fade" id="addPositionModal">-->
         <div class="modal-dialog">
             <div class="modal-content">

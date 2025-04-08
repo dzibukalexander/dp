@@ -1,4 +1,3 @@
-<!-- Контент для доктора. Файл index-doctor -->
 <div class="doctor-tabs">
     <!-- Вкладки -->
     <div class="tab-buttons">
@@ -20,14 +19,33 @@
                                          alt="Аватар пациента"
                                          class="profile-avatar">
                                 </#if>
-                                <h4>${request.patient.user.firstName} ${request.patient.user.secondName}</h4>
+                                <h4>${request.patient.user.firstName} ${request.patient.user.name}</h4>
                                 <p>Дата: ${request.formattedDateCreated}</p>
                             </div>
-                            <#if request.page??>
-                                <img src="/photo/${request.page.id}"
+                            <#if request.requestPage??>
+                                <img src="/photo/${request.requestPage.id}"
                                      alt="Фото пациента"
                                      class="request-photo">
                             </#if>
+                            <div class="status-indicator"></div>
+                            <!-- Основной блок индикаторов -->
+                            <#if request.inProgress?? && request.inProgress>
+                                <div class="status-indicator in-progress"></div>
+                            <#elseif request.response??>
+                                <div class="status-indicator completed"></div>
+                            <#else>
+                                <div class="status-indicator pending"></div>
+                            </#if>
+
+                            <!-- Альтернативный вариант с ?then -->
+                            <div class="status-indicator ${(request.inProgress!false)?then('in-progress', '')}"></div>
+
+                            <!-- Индикатор загрузки -->
+                            <div id="prediction-loading" class="loading-indicator"
+                                 style="display: ${(request.inProgress!false)?then('block', 'none')};">
+                                <div class="spinner"></div>
+                                <p>Идет анализ изображения...</p>
+                            </div>
                         </div>
                     </a>
                 </#list>
@@ -52,7 +70,7 @@
                                 <#else>
                                     <div class="avatar-placeholder">Нет аватара</div>
                                 </#if>
-                                <h4>${request.patient.user.firstName} ${request.patient.user.secondName}</h4>
+                                <h4>${request.patient.user.firstName} ${request.patient.user.name}</h4>
                                 <p>Дата: ${request.formattedDateCreated}</p>
                             </div>
                             <div class="photos-container">
@@ -78,6 +96,9 @@
                                     </div>
                                 </#if>
                             </div>
+
+                            <!-- Индикаторы для закрытых запросов -->
+                            <div class="status-indicator ${(request.inProgress!false)?then('in-progress', 'completed')}"></div>
                         </div>
                     </a>
                 </#list>

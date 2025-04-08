@@ -42,7 +42,9 @@ public class ProfileController {
         model.addAttribute("roles", roles);
 
         if (user.getRoles().contains(Role.DOCTOR)) {
-            model.addAttribute("position", user.getDoctor().getPosition().getName());
+            Position pos = user.getDoctor().getPosition();
+            model.addAttribute("curposition", pos);
+            model.addAttribute("notSetPositions", positionService.findPositionsByNameNot(pos.getName()));
         }
 
         return "profile";
@@ -55,7 +57,8 @@ public class ProfileController {
             @RequestParam String name,
             @RequestParam String secondName,
             @RequestParam(required = false) String positionName,
-            @RequestParam(required = false) MultipartFile avatar
+            @RequestParam(required = false) MultipartFile avatar,
+            @RequestParam(required = false) Long positionId
     ) throws IOException {
         User user = userService.findById(id); // Используем email из запроса
 
@@ -65,13 +68,9 @@ public class ProfileController {
         user.setSecondName(secondName);
 
         // Обновление позиции для доктора
-        if (user.getRoles().contains(Role.DOCTOR) && positionName != null) {
-            Position position = positionService.findByName(positionName);
-            if (position == null) {
-                position = new Position();
-                position.setName(positionName);
-                positionService.save(position);
-            }
+
+        if (user.getRoles().contains(Role.DOCTOR)) {
+            Position position = positionService.findById(positionId);
             user.getDoctor().setPosition(position);
             doctorService.save(user.getDoctor());
         }

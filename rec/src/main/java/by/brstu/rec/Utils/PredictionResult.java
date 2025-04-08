@@ -6,6 +6,7 @@ public class PredictionResult {
     private String result;
     private Double confidence;
     private Map<String, Object> additionalData;
+    private Byte[] photoData;
 
     public PredictionResult(String result) {
         this.result = result;
@@ -33,5 +34,13 @@ public class PredictionResult {
 
     public void setAdditionalData(Map<String, Object> additionalData) {
         this.additionalData = additionalData;
+    }
+
+    public Byte[] getPhotoData() {
+        return photoData;
+    }
+
+    public void setPhotoData(Byte[] photoData) {
+        this.photoData = photoData;
     }
 }

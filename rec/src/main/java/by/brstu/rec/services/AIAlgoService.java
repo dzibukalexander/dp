@@ -34,6 +34,10 @@ public class AIAlgoService {
         return aiAlgoRepository.findById(id);
     }
 
+    public AIAlgo findByPosition(Position position){
+        return aiAlgoRepository.findByPosition(position);
+    }
+
     public List<AIAlgo> findAll(){
         return aiAlgoRepository.findAll();
     }
@@ -65,7 +69,7 @@ public class AIAlgoService {
     }
 
     private PredictionResult callModel(AIAlgo model, byte[] fileData) throws ModelPredictionException {
-        String url = "http://localhost:" + model.getEndpoint();
+        String url = "http://localhost:3333" + model.getEndpoint();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -88,7 +92,8 @@ public class AIAlgoService {
 
             return response.getBody();
         } catch (Exception e) {
-            throw new ModelPredictionException("Error calling model " + model.getName());
+            throw new ModelPredictionException(e.getMessage());
+//            throw new ModelPredictionException("Error calling model " + model.getName());
         }
     }
 }

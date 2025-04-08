@@ -1,52 +1,100 @@
 <#assign title = "AI-Модели">
 <#assign content>
-    <div class="models-header">
-        <h2 class="mb-4">Список моделей</h2>
-        <a href="/admin/ai-algos/new" class="btn btn-success">Добавить</a>
+    <div class="models-header d-flex justify-content-between align-items-center mb-4">
+        <h2>Список моделей</h2>
+        <a href="/admin/ai-algos/new" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Добавить модель
+        </a>
     </div>
 
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Название</th>
-            <th>Описание</th>
-            <th>Kaggle URL</th>
-            <th>Статус</th>
-            <th>По умолчанию</th>
-            <th>API URL</th>
-            <th>Связанная специализация</th>
-            <th>Действия</th>
-        </tr>
-        </thead>
-        <tbody>
-        <#list aiAlgos as aiAlgo>
-            <tr class="clickable-row" data-id="${aiAlgo.id}">
-                <td>${aiAlgo.name}</td>
-                <td>${aiAlgo.description!''}</td>
-                <td>${aiAlgo.kaggleURL!''}</td>
-                <td>${aiAlgo.status!''}</td>
-                <td>${aiAlgo.is_default?then('Да', 'Нет')}</td>
-                <td>"${aiAlgo.endpoint!''}"</td>
-                <td>
-                    <#if aiAlgo.position??>
-                        ${aiAlgo.position.name}
-                    <#else>
-                        Нет связи
-                    </#if>
-                </td>
-                <td>
-                    <!-- Кнопки действий, например, удаление или редактирование -->
-                    <form action="/admin/ai-algos/del/${aiAlgo.id}" method="post" style="display: inline;">
-                        <input type="hidden" name="_method" value="DELETE">
-                        <button type="submit" class="btn-delete">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </form>
-                </td>
-            </tr>
-        </#list>
-        </tbody>
-    </table>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                    <tr>
+<#--                        <th>ID</th>-->
+                        <th>Название</th>
+                        <th>Тип ввода</th>
+                        <th>Тип вывода</th>
+                        <th>API Endpoint</th>
+                        <th>Описание</th>
+                        <th>Kaggle URL</th>
+                        <th>Статус</th>
+                        <th>По умолчанию</th>
+                        <th>Специализация</th>
+                        <th>Действия</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <#list aiAlgos as aiAlgo>
+                        <tr class="clickable-row" data-id="${aiAlgo.id}">
+<#--                            <td>${aiAlgo.id}</td>-->
+                            <td>${aiAlgo.name}</td>
+                            <td>
+                                <span class="badge bg-info">
+                                    ${aiAlgo.inputType.toString()}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-primary">
+                                    ${aiAlgo.outputType.toString()}
+                                </span>
+                            </td>
+                            <td>
+                                <code>${aiAlgo.endpoint}</code>
+                            </td>
+                            <td class="text-truncate" style="max-width: 200px;" title="${aiAlgo.description!''}">
+                                ${aiAlgo.description!''}
+                            </td>
+                            <td>
+                                <#if aiAlgo.kaggleURL??>
+                                    <a href="${aiAlgo.kaggleURL}" target="_blank" class="text-decoration-none">
+                                        <i class="bi bi-box-arrow-up-right"></i> Ссылка
+                                    </a>
+                                <#else>
+                                    -
+                                </#if>
+                            </td>
+                            <td>
+                                <span class="badge <#if aiAlgo.status == 'ACTIVE'>bg-success<#else>bg-secondary</#if>">
+                                    ${aiAlgo.status.toString()}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge <#if aiAlgo.isDefault>bg-warning text-dark<#else>bg-light text-dark</#if>">
+                                    ${aiAlgo.isDefault?then('Да', 'Нет')}
+                                </span>
+                            </td>
+                            <td>
+                                <#if aiAlgo.position??>
+                                    <span class="badge bg-dark">${aiAlgo.position.name}</span>
+                                <#else>
+                                    <span class="badge bg-light text-dark">Не назначено</span>
+                                </#if>
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a href="/admin/ai-algos/edit/${aiAlgo.id}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <form action="/admin/ai-algos/del/${aiAlgo.id}" method="post" class="d-inline">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                onclick="return confirm('Вы уверены, что хотите удалить эту модель?')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </#list>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</#assign>
 
     <!-- Модальное окно для редактирования AIAlgo -->
 <#--    <div class="modal fade" id="editAIAlgoModal">-->
@@ -98,6 +146,6 @@
 <#--            </div>-->
 <#--        </div>-->
 <#--    </div>-->
-</#assign>
+<#--</#assign>-->
 
 <#include "layout.ftlh">

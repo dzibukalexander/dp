@@ -28,31 +28,53 @@ window.sendPhoto = function (doctorId) {
                     alert('Ошибка при отправке фото');
                 }
             })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Ошибка при отправке фото');
-            })
-            .finally(() => {
-                document.getElementById('loading-overlay').style.display = 'none';
-                document.body.style.overflow = '';
-            });
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Ошибка при отправке фото');
+                })
+                .finally(() => {
+                    document.getElementById('loading-overlay').style.display = 'none';
+                    document.body.style.overflow = '';
+                });
         }
     };
     fileInput.click();
 };
 
 
-window.filterDoctors = function () {
+window.filterDoctors = function() {
     const input = document.getElementById('specializationFilter');
     const filter = input.value.toUpperCase();
-    const cards = document.querySelectorAll('.card');
 
-    cards.forEach(card => {
+    // Фильтрация докторов
+    const doctorCards = document.querySelectorAll('#doctorsContainer .card');
+    doctorCards.forEach(card => {
         const specialization = card.getAttribute('data-specialization').toUpperCase();
         card.style.display = specialization.includes(filter) ? '' : 'none';
     });
-};
 
+    // Фильтрация открытых запросов
+    const openRequests = document.querySelectorAll('#open-tab .request-card');
+    openRequests.forEach(card => {
+        const specialization = card.getAttribute('data-specialization').toUpperCase();
+        card.style.display = specialization.includes(filter) ? '' : 'none';
+    });
+
+    // Фильтрация закрытых запросов
+    const closedRequests = document.querySelectorAll('#closed-tab .request-card-link');
+    closedRequests.forEach(card => {
+        const specialization = card.getAttribute('data-specialization').toUpperCase();
+        card.style.display = specialization.includes(filter) ? '' : 'none';
+    });
+
+    // // Показываем сообщение, если ничего не найдено
+    // const noResultsMessages = document.querySelectorAll('.no-requests');
+    // noResultsMessages.forEach(msg => {
+    //     const container = msg.closest('.requests-container');
+    //     const visibleItems = container.querySelectorAll('[data-specialization]:not([style*="display: none"])');
+    //     msg.style.display = visibleItems.length === 0 ? 'block' : 'none';
+    // });
+};
 // Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', function () {
     // Плавная прокрутка

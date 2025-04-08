@@ -21,9 +21,7 @@
             <#if user.avatar??> <!-- Проверка наличия аватара и его id -->
                 <img src="/avatar/${user.avatar.id}" class="avatar" alt="Аватар">
             <#else>
-                <div class="avatar bg-secondary text-white d-flex align-items-center justify-content-center">
-                    <span>Нет аватара</span>
-                </div>
+                <span>Нет аватара</span>
             </#if>
             <div class="mt-3">
                 <label for="avatar" class="form-label">Изменить аватар:</label>
@@ -48,9 +46,23 @@
         <!-- Специализация (для докторов) -->
         <#list roles as role>
             <#if role == 'DOCTOR'>
-                <div class="mb-3">
-                    <label for="positionName" class="form-label">Специализация:</label>
-                    <input type="text" class="form-control" id="positionName" name="positionName" value="${position!''}">
+<#--                <div class="mb-3">-->
+<#--                    <label for="positionName" class="form-label">Специализация:</label>-->
+<#--                    <input type="text" class="form-control" id="positionName" name="positionName" value="${position!''}">-->
+<#--                </div>-->
+                <div class="mb-3" id="positionField">
+                    <label for="positionId" class="form-label">Специализация:</label>
+                    <select class="form-select" id="positionId" name="positionId" required>
+                        <option value="${curposition.id}">${curposition.name}</option>
+                        <#list notSetPositions as notPosition>
+                            <option value="${notPosition.id}">${notPosition.name}</option>
+                        </#list>
+                    </select>
+                    <#if errorChoicePos??>
+                        <div class="alert alert-danger" role="alert">
+                            ${errorChoicePos}
+                        </div>
+                    </#if>
                 </div>
             </#if>
         </#list>

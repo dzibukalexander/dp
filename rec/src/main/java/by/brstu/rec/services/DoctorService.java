@@ -1,7 +1,9 @@
 package by.brstu.rec.services;
 
+import by.brstu.rec.entities.AIAlgo;
 import by.brstu.rec.entities.Doctor;
 import by.brstu.rec.entities.DoctorPatientPage;
+import by.brstu.rec.entities.Position;
 import by.brstu.rec.repositories.DoctorPatientPageRepository;
 import by.brstu.rec.repositories.DoctorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +15,6 @@ import java.util.List;
 public class DoctorService {
     @Autowired
     private DoctorRepository doctorRepository;
-    @Autowired
-    private DoctorPatientPageRepository doctorPatientPageRepository;
 
     public void save(Doctor doctor) {
         doctorRepository.save(doctor);

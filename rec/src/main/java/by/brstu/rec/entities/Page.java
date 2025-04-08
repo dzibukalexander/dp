@@ -27,8 +27,12 @@ public class Page {
     @Lob
     private byte[] bytes;
 
-    @OneToMany(mappedBy = "page")
-    private Set<DoctorPatientPage> doctorPatientPages;
+
+    @OneToMany(mappedBy = "requestPage", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<DoctorPatientPage> requestPages;
+
+    @OneToMany(mappedBy = "responsePage", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<DoctorPatientPage> responsePages;
 
     public Long getId() {
         return id;
