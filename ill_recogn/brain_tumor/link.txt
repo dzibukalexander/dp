@@ -1,2 +1,0 @@
-https://www.kaggle.com/datasets/preetviradiya/brian-tumor-dataset/data
-https://www.kaggle.com/code/boneacrabonjac/brain-tumor-classification-with-simple-cnn/notebook
